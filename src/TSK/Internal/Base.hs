@@ -48,9 +48,3 @@ printError =  error "TODO!"
 
 resetError :: IO ()
 resetError = [C.exp| void { tsk_error_reset() } |]
-
-
-foo :: Show a => a -> IO ()
-foo a =
-  withCString (show a) $
-    \cStr -> [C.block| void { fprintf(stderr, $(char const* cStr)); } |]

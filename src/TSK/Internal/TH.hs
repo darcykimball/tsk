@@ -7,6 +7,7 @@ module TSK.Internal.TH (
 
 
 
+import Data.Int (Int64(..))
 import Language.C.Types
 import Language.C.Inline.Context
 
@@ -27,6 +28,8 @@ tskCtx = baseCtx {
   where
     -- FIXME/TODO! finish adding everything that's necessary! automate??
     tskTypesTable = M.fromList [
-        (TypeName "TSK_IMG_TYPE_ENUM", [t| ImgType |])
+        (TypeName "TSK_IMG_TYPE_ENUM", [t| ImgTypeEnum |])
       , (TypeName "TSK_IMG_INFO", [t| ImgInfoStruct |])
+      , (TypeName "TSK_OFF_T", [t| Offset |]) 
+      , (TypeName "ssize_t", [t| Int64 |]) 
       ]
