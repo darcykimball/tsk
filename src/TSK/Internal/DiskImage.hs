@@ -61,14 +61,14 @@ closeImage (ImgInfo ptr) =
 
 -- XXX: There's gotta be a better, possibly less safe but faster way to do this
 readImageBytes :: ImgInfo -> Offset -> Word64 -> IO B.ByteString
-readImageBytes (ImgInfo ptr) (Offset offset) n =
+readImageBytes (ImgInfo ptr) offset n =
   allocaArray (fromIntegral n) $ \buf -> do
     retVal <- [C.exp| ssize_t {
         tsk_img_read(
           $(TSK_IMG_INFO* ptr),
           $(TSK_OFF_T offset),
           $(char* buf),
-          $(size_t numBytesToRead)
+          $(size_t numBytesToRead))
       }
     |]
    
@@ -102,17 +102,17 @@ getImageType :: ImgInfo -> IO ImgTypeEnum
 getImageType = fmap ImgTypeEnum . peekImageType . getImgInfoPtr 
 
 
-getPageSize :: ImgInfo -> IO Word32 
-getPageSize = fmap getCUInt . peekPageSize . getImgInfoPtr
+getPageSize :: ImgInfo -> IO CUInt 
+getPageSize = peekPageSize . getImgInfoPtr
 
 
-getSectorSize :: ImgInfo -> IO Word32 
-getSectorSize = fmap getCUInt . peekSectorSize . getImgInfoPtr
+getSectorSize :: ImgInfo -> IO CUInt 
+getSectorSize = peekSectorSize . getImgInfoPtr
 
 
 getImageSize :: ImgInfo -> IO Offset
-getImageSize = fmap getOffset . peekImageSize . getImgInfoPtr
+getImageSize = peekImageSize . getImgInfoPtr
 
 
-getSpareSize :: ImgInfo -> IO Word32
-getSpareSize = fmap getCUInt . peekSpareSize . getImgInfoPtr
+getSpareSize :: ImgInfo -> IO CUInt
+getSpareSize = peekSpareSize . getImgInfoPtr

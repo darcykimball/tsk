@@ -40,8 +40,7 @@ data TSKLock
 
 
 -- Type aliases
-data Offset = Offset { getOffset :: #{type TSK_OFF_T} }
-type UInt = #{type unsigned int}
+type Offset = #{type TSK_OFF_T}
 
 
 -- TSK disk image info struct and opaque rep.
@@ -60,7 +59,7 @@ peekSectorSize :: Ptr ImgInfoStruct -> IO CUInt
 peekSectorSize = #{peek TSK_IMG_INFO, sector_size}
 
 peekImageSize :: Ptr ImgInfoStruct -> IO Offset
-peekImageSize  = fmap Offset . #{peek TSK_IMG_INFO, size}
+peekImageSize  = #{peek TSK_IMG_INFO, size}
 
 peekSpareSize :: Ptr ImgInfoStruct -> IO CUInt
 peekSpareSize  = #{peek TSK_IMG_INFO, spare_size}
