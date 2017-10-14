@@ -25,6 +25,7 @@ library
   exposed-modules:     TSK
                      , TSK.Internal.Base
                      , TSK.Internal.DiskImage
+                     , TSK.Internal.Volume
                      , TSK.Internal.Exception
                      , TSK.Internal.FileSystem
                      , TSK.Internal.Types

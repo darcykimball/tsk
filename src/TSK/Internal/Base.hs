@@ -6,6 +6,7 @@ module TSK.Internal.Base where
 import Data.Word (Word32)
 import Foreign.C.String (CString, peekCString, withCString)
 import Foreign.C.Types
+import Foreign.Ptr (nullPtr)
 import System.IO (Handle)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Posix.IO
@@ -31,7 +32,11 @@ getErrorCString = [C.exp| const char* { tsk_error_get() } |]
 
 
 getErrorString :: IO String
-getErrorString = getErrorCString >>= peekCString
+getErrorString = do
+  errMsg <- getErrorCString
+  if errMsg == nullPtr
+    then return "No TSK error set"
+    else peekCString errMsg
 
 
 -- XXX: Dammit. The return type of the C function is uint32_t, but

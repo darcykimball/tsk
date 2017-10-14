@@ -1,11 +1,8 @@
 {-# LANGUAGE QuasiQuotes, TemplateHaskell #-}
-module TSK.Internal.DiskImage (
-    imgTypeIsAFF
-  , imgTypeIsEWF
-  , imgTypeIsRAW
-  ) where
+module TSK.Internal.DiskImage where
 
 
+import Control.Monad (when)
 import Data.Word
 import Foreign.Ptr
 import Foreign.C.Types
@@ -17,6 +14,7 @@ import qualified Data.Text.Encoding as TE
 import qualified Language.C.Inline as C
 
 
+import TSK.Internal.Exception
 import TSK.Internal.TH
 import TSK.Internal.Types
 import TSK.Internal.Util
@@ -51,7 +49,9 @@ openSingleImage path imgType sectorSize =
       |] 
 
   -- TODO: check how Ptr Eq is implemented!!
-    if retVal == nullPtr then error "FIXME" else return $ ImgInfo retVal
+  -- FIXME: when vs if/else/then??
+    when (retVal == nullPtr) throwTSK 
+    return $ ImgInfo retVal
 
 
 closeImage :: ImgInfo -> IO ()
@@ -72,7 +72,8 @@ readImageBytes (ImgInfo ptr) offset n =
       }
     |]
    
-    -- FIXME: error checking!!
+    when (retVal == ssizeErrorVal) throwTSK 
+
     B.packCString buf 
   where
     numBytesToRead = CSize n
