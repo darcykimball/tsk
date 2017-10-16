@@ -30,6 +30,12 @@ tskCtx = baseCtx {
     tskTypesTable = M.fromList [
         (TypeName "TSK_IMG_TYPE_ENUM", [t| ImgTypeEnum |])
       , (TypeName "TSK_IMG_INFO", [t| ImgInfoStruct |])
+      , (TypeName "TSK_VS_TYPE_ENUM", [t| VSTypeEnum |])
+      , (TypeName "TSK_VS_INFO", [t| VSInfoStruct |])
+      , (TypeName "TSK_VS_PART_INFO", [t| PartInfoStruct |])
+      , (TypeName "TSK_VS_PART_FLAG_ENUM", [t| PartFlagsEnum |])
       , (TypeName "TSK_OFF_T", [t| Offset |]) 
+      , (TypeName "TSK_DADDR_T", [t| DiskAddr|]) 
+      , (TypeName "TSK_PNUM_T", [t| PartAddr |]) 
       , (TypeName "ssize_t", [t| Int64 |]) 
       ]
