@@ -141,6 +141,7 @@ type DiskAddr = #{type TSK_DADDR_T}
 data FSInfoStruct
 newtype FSInfo = FSInfo { getFSInfoStruct :: Ptr FSInfoStruct }
 
+
 -- Enum of filesystem types
 newtype FSType = FSType CInt
   deriving (Eq, Ord, Show)

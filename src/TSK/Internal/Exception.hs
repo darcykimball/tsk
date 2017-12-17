@@ -2,8 +2,13 @@
 module TSK.Internal.Exception where
 
 
+import Control.Monad (when)
+import Foreign.Ptr
+
+
 import Control.Exception
 import Data.Int (Int64)
+
 
 import TSK.Internal.Base
 
@@ -27,3 +32,11 @@ throwTSK = do
 
 ssizeErrorVal :: Int64
 ssizeErrorVal = fromIntegral (-1)
+
+
+-- Make an action throw a TSK exceptino if the return value is the null ptr.
+throwOnNull :: IO (Ptr a) -> IO (Ptr a)
+throwOnNull io = do
+  retVal <- io
+  when (retVal == nullPtr) throwTSK
+  return retVal

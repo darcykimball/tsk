@@ -34,11 +34,10 @@ openImage :: [T.Text] -> ImgTypeEnum -> CUInt -> IO ImgInfo
 openImage = error "TODO"
 
 
--- TODO: error handling...
 openSingleImage :: T.Text -> ImgTypeEnum -> CUInt -> IO ImgInfo
 openSingleImage path imgType sectorSize =
   B.useAsCString (TE.encodeUtf8 path) $ \path' -> do
-    retVal <- 
+    ImgInfo <$> throwOnNull
       [C.exp| TSK_IMG_INFO* {
           tsk_img_open_utf8_sing(
             $(const char* path'),
@@ -47,11 +46,6 @@ openSingleImage path imgType sectorSize =
           )
         }
       |] 
-
-  -- TODO: check how Ptr Eq is implemented!!
-  -- FIXME: when vs if/else/then??
-    when (retVal == nullPtr) throwTSK 
-    return $ ImgInfo retVal
 
 
 closeImage :: ImgInfo -> IO ()
