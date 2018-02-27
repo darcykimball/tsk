@@ -106,4 +106,3 @@ vsPartWalk (VSInfo ptr) start end flags callback = do
             |]
   
   when (retVal /= 0) throwTSK
-  where
