@@ -2,7 +2,6 @@
 module TSK.Internal.Volume where
 
 
-
 import Control.Monad (when)
 import Foreign.Ptr
 import Foreign.C.Types
@@ -14,6 +13,7 @@ import qualified Language.C.Inline as C
 import qualified Language.C.Inline.Unsafe as CU
 
 
+import TSK.Internal.Callback
 import TSK.Internal.Exception
 import TSK.Internal.TH
 import TSK.Internal.Types
@@ -81,3 +81,29 @@ vsTypeToInternalID vsType = throwOnNull
 vsTypeToName :: VSTypeEnum -> IO CString
 vsTypeToName vsType = throwOnNull
   [C.exp| const char* { tsk_vs_type_toname$(TSK_VS_TYPE_ENUM vsType) } |]
+
+
+vsPartWalk ::
+     VSInfo
+  -> PartAddr
+  -> PartAddr
+  -> PartFlagsEnum
+  -> (VSInfo -> PartInfo -> IO CallbackRetEnum)
+  -> IO ()
+vsPartWalk (VSInfo ptr) start end flags callback = do
+  wrapped <- wrapPartCallback callback
+
+  retVal <- [C.exp| uint8_t {
+              tsk_vs_part_walk(
+                $(TSK_VS_INFO* ptr),
+                $(TSK_PNUM_T start),
+                $(TSK_PNUM_T end),
+                $(TSK_VS_PART_FLAG_ENUM flags),
+                $(TSK_VS_PART_WALK_CB wrapped),
+                $(void* nullPtr)
+                )
+              }
+            |]
+  
+  when (retVal /= 0) throwTSK
+  where

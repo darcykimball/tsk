@@ -131,6 +131,11 @@ type PartAddr = #{type TSK_PNUM_T}
 type DiskAddr = #{type TSK_DADDR_T}
 
 
+-- Callback stuff
+newtype CallbackRetEnum = CallbackRetEnum CInt
+  deriving (Eq, Ord, Show)
+
+
 --
 -- Filesystem types
 --
@@ -145,3 +150,4 @@ newtype FSInfo = FSInfo { getFSInfoStruct :: Ptr FSInfoStruct }
 -- Enum of filesystem types
 newtype FSType = FSType CInt
   deriving (Eq, Ord, Show)
+

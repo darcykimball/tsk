@@ -15,6 +15,7 @@ import qualified Data.Map.Lazy as M
 import qualified Language.C.Inline as C
 
 
+import TSK.Internal.Callback
 import TSK.Internal.Types
 
 
@@ -34,8 +35,11 @@ tskCtx = baseCtx {
       , (TypeName "TSK_VS_INFO", [t| VSInfoStruct |])
       , (TypeName "TSK_VS_PART_INFO", [t| PartInfoStruct |])
       , (TypeName "TSK_VS_PART_FLAG_ENUM", [t| PartFlagsEnum |])
+      , (TypeName "TSK_VS_PART_WALK_CB", [t| PartWalkCallbackPtr |])
       , (TypeName "TSK_OFF_T", [t| Offset |]) 
       , (TypeName "TSK_DADDR_T", [t| DiskAddr|]) 
       , (TypeName "TSK_PNUM_T", [t| PartAddr |]) 
+      , (TypeName "TSK_WALK_RET_ENUM", [t| CallbackRetEnum |]) 
       , (TypeName "ssize_t", [t| Int64 |]) 
+      , (TypeName "uint8_t", [t| C.CUChar |]) 
       ]
