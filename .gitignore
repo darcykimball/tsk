@@ -1,3 +1,7 @@
 .*
 !/.gitignore
 .*.swp
+Types.hs
+Types_out.hs
+*.img
+*.c
