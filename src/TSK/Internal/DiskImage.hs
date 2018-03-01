@@ -2,11 +2,15 @@
 module TSK.Internal.DiskImage where
 
 
-import Control.Monad (when)
+import Control.Monad (when, forM_)
+import Data.List
 import Data.Word
 import Foreign.Ptr
+import Foreign.C.String
 import Foreign.C.Types
+import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
+import Foreign.Storable
 
 import qualified Data.ByteString as B -- FIXME: should use lazy or strict??
 import qualified Data.Text as T
@@ -31,7 +35,34 @@ C.include "<tsk/libtsk.h>"
 
 
 openImage :: [T.Text] -> ImgTypeEnum -> CUInt -> IO ImgInfo
-openImage = error "TODO"
+openImage imgPaths imgType sectorSize = do
+  withCStrings sortedPathBytes $ \paths ->
+    -- Make a C list of strings
+    allocaBytes (numImgs + 1) $ \strList -> do
+      forM_ [0 .. numImgs - 1] (\i -> pokeElemOff strList i (paths !! i))
+      pokeElemOff strList numImgs nullPtr
+    
+      ImgInfo <$> throwOnNull
+        [C.exp| TSK_IMG_INFO* {
+            tsk_img_open_utf8(
+              $(int intNumImgs),
+              $(const char* const* strList),
+              $(TSK_IMG_TYPE_ENUM imgType),
+              $(unsigned int sectorSize)
+            )
+          }
+        |]   
+  where
+    sortedPathBytes = map TE.encodeUtf8 $ sort imgPaths
+    numImgs = length imgPaths
+    intNumImgs = fromIntegral numImgs
+
+
+    -- XXX:  Helper for making a null-terminated list of CStrings
+    withCStrings :: [B.ByteString] -> ([CString] -> IO a) -> IO a
+    withCStrings []       f = f []
+    withCStrings (s:rest) f = B.useAsCString s $ \cstr ->
+      withCStrings rest (\cstrs -> f (cstr:cstrs))
 
 
 openSingleImage :: T.Text -> ImgTypeEnum -> CUInt -> IO ImgInfo
