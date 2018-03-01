@@ -3,6 +3,7 @@ module TSK.Internal.Volume where
 
 
 import Control.Monad (when)
+import Foreign.Marshal.Alloc
 import Foreign.Ptr
 import Foreign.C.Types
 import Foreign.C.String
@@ -40,6 +41,24 @@ closeVolume (VSInfo ptr) =
   [C.exp| void { tsk_vs_close($(TSK_VS_INFO* ptr)) } |]
 
 
+readVolumeBlock :: VSInfo -> DiskAddr -> CSize -> IO B.ByteString
+readVolumeBlock (VSInfo ptr) daddr numBytesToRead = do
+  allocaBytes (fromIntegral numBytesToRead) $ \buf -> do
+    retVal <- [C.exp| ssize_t {
+                  tsk_vs_read_block(
+                    $(TSK_VS_INFO* ptr),
+                    $(TSK_DADDR_T daddr),
+                    $(char* buf),
+                    $(size_t numBytesToRead)
+                  )
+                }
+              |]
+  
+    when (retVal == ssizeErrorVal) throwTSK
+
+    B.packCString buf 
+
+
 getPartition :: VSInfo -> PartAddr -> IO PartInfo
 getPartition (VSInfo ptr) paddr = PartInfo <$> throwOnNull
   [C.exp| TSK_VS_PART_INFO* {
@@ -49,18 +68,41 @@ getPartition (VSInfo ptr) paddr = PartInfo <$> throwOnNull
 
 
 readPartitionBytes :: PartInfo -> Offset -> CSize -> IO B.ByteString
-readPartitionBytes = error "TODO"
+readPartitionBytes (PartInfo ptr) offset numBytesToRead = do
+  allocaBytes (fromIntegral numBytesToRead) $ \buf -> do
+    retVal <- [C.exp| ssize_t {
+                  tsk_vs_part_read(
+                    $(TSK_VS_PART_INFO* ptr),
+                    $(TSK_OFF_T offset),
+                    $(char* buf),
+                    $(size_t numBytesToRead)
+                  )
+                }
+              |]
+
+    when (retVal == ssizeErrorVal) throwTSK
+
+    B.packCString buf 
 
 
 readPartitionBlockBytes :: PartInfo -> DiskAddr -> CSize -> IO B.ByteString
-readPartitionBlockBytes = error "TODO"
+readPartitionBlockBytes (PartInfo ptr) daddr numBytesToRead = 
+  allocaBytes (fromIntegral numBytesToRead) $ \buf -> do
+    retVal <- [C.exp| ssize_t {
+                  tsk_vs_part_read_block(
+                    $(TSK_VS_PART_INFO* ptr),
+                    $(TSK_DADDR_T daddr),
+                    $(char* buf),
+                    $(size_t numBytesToRead)
+                  )
+                }
+              |]
 
+    when (retVal == ssizeErrorVal) throwTSK
 
-traversePartitions ::
-  PartAddr -> PartAddr -> (PartInfo -> IO a) -> VSInfo -> IO [a]
-traversePartitions = error "TODO"
+    B.packCString buf 
 
-
+--
 -- TODO/FIXME check purity...
 supportedVSTypes :: VSTypeEnum
 supportedVSTypes = [CU.pure| TSK_VS_TYPE_ENUM { tsk_vs_type_supported() } |]
