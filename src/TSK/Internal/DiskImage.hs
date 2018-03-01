@@ -38,9 +38,8 @@ openImage :: [T.Text] -> ImgTypeEnum -> CUInt -> IO ImgInfo
 openImage imgPaths imgType sectorSize = do
   withCStrings sortedPathBytes $ \paths ->
     -- Make a C list of strings
-    allocaBytes (numImgs + 1) $ \strList -> do
+    allocaBytes numImgs $ \strList -> do
       forM_ [0 .. numImgs - 1] (\i -> pokeElemOff strList i (paths !! i))
-      pokeElemOff strList numImgs nullPtr
     
       ImgInfo <$> throwOnNull
         [C.exp| TSK_IMG_INFO* {
@@ -58,7 +57,7 @@ openImage imgPaths imgType sectorSize = do
     intNumImgs = fromIntegral numImgs
 
 
-    -- XXX:  Helper for making a null-terminated list of CStrings
+    -- XXX:  Helper for making an array of CStrings
     withCStrings :: [B.ByteString] -> ([CString] -> IO a) -> IO a
     withCStrings []       f = f []
     withCStrings (s:rest) f = B.useAsCString s $ \cstr ->
