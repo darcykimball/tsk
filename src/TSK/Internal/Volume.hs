@@ -93,6 +93,7 @@ vsPartWalk ::
 vsPartWalk (VSInfo ptr) start end flags callback = do
   wrapped <- wrapPartCallback callback
 
+  -- TODO: make C indentation consistent ffs
   retVal <- [C.exp| uint8_t {
               tsk_vs_part_walk(
                 $(TSK_VS_INFO* ptr),

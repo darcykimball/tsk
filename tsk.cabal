@@ -24,6 +24,7 @@ library
   extra-libraries:     tsk
   exposed-modules:     TSK
                      , TSK.Internal.Base
+                     , TSK.Internal.Callback
                      , TSK.Internal.DiskImage
                      , TSK.Internal.Volume
                      , TSK.Internal.Exception

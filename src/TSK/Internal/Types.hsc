@@ -148,6 +148,6 @@ newtype FSInfo = FSInfo { getFSInfoStruct :: Ptr FSInfoStruct }
 
 
 -- Enum of filesystem types
-newtype FSType = FSType CInt
+newtype FSTypeEnum = FSType CInt
   deriving (Eq, Ord, Show)
 
