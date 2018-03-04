@@ -1,8 +1,10 @@
 {-# LANGUAGE EmptyDataDecls #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module TSK.Internal.Types where
 
 
 import Control.Applicative
+import Data.Flags
 import Data.Int
 import Data.Word
 import Foreign.Ptr
@@ -80,8 +82,8 @@ newtype VSTypeEnum = VSTypeEnum CInt
   deriving (Eq, Ord, Show)
 
 
-newtype PartFlagsEnum = PartFlagsEnum CInt
-  deriving (Eq, Ord, Show)
+newtype PartFlags = PartFlags CInt
+  deriving (Eq, Ord, Show, Flags)
 
 
 newtype EndiannessEnum = EndiannessEnum CInt
@@ -158,18 +160,18 @@ newtype FSTypeEnum = FSType CInt
 
 
 -- Read flags
-newtype FileReadFlagsEnum = FileReadFlagsEnum CInt
-  deriving (Eq, Ord, Show)
+newtype FileReadFlags = FileReadFlags CInt
+  deriving (Eq, Ord, Show, Flags)
 
 
 -- File walk flags argument
-newtype FileWalkFlagsEnum = FileWalkFlagsEnum CInt
-  deriving (Eq, Ord, Show)
+newtype FileWalkFlags = FileWalkFlags CInt
+  deriving (Eq, Ord, Show, Flags)
 
 
 -- Metadata attribute flags
 newtype MetaAttrFlags = MetaAttrFlags CInt
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Flags)
 
 
 -- Metadata content type
@@ -179,12 +181,12 @@ newtype MetaContentTypeEnum = MetaContentTypeEnum Int
 
 -- Metadata flags
 newtype MetaFlags = MetaFlags CInt
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Flags)
 
 
 -- Metadata permission modes
 newtype MetaModeFlags = MetaModeFlags CInt
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Flags)
 
 
 -- Metadata filetype enum

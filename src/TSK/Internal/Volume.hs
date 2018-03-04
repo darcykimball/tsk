@@ -129,7 +129,7 @@ vsPartWalk ::
      VSInfo
   -> PartAddr
   -> PartAddr
-  -> PartFlagsEnum
+  -> PartFlags
   -> (VSInfo -> PartInfo -> IO CallbackRetEnum)
   -> IO ()
 vsPartWalk (VSInfo ptr) start end flags callback = do

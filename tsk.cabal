@@ -41,6 +41,8 @@ library
                      , bytestring
                      , text
                      , containers
+                     , data-flags
+                     , time
   default-language:    Haskell2010
 
 executable tsk-exe
