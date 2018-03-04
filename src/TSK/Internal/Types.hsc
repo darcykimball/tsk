@@ -24,6 +24,11 @@ import qualified Data.Text.Encoding as TE
 -- TODO: still necessary to test if Windows or not then? i.e. what TSK_TCHAR is?
 
 
+-- XXX: Naming: 'Enum' suffix means it's logically a sum type, and 'Flags'
+-- suffix means it's logically it's bitflags.
+-- TODO: Better make sure this is consistent
+
+
 --
 -- Disk Image types
 --
@@ -151,3 +156,46 @@ newtype FSInfo = FSInfo { getFSInfoStruct :: Ptr FSInfoStruct }
 newtype FSTypeEnum = FSType CInt
   deriving (Eq, Ord, Show)
 
+
+-- Read flags
+newtype FileReadFlagsEnum = FileReadFlagsEnum CInt
+  deriving (Eq, Ord, Show)
+
+
+-- File walk flags argument
+newtype FileWalkFlagsEnum = FileWalkFlagsEnum CInt
+  deriving (Eq, Ord, Show)
+
+
+-- Metadata attribute flags
+newtype MetaAttrFlags = MetaAttrFlags CInt
+  deriving (Eq, Ord, Show)
+
+
+-- Metadata content type
+newtype MetaContentTypeEnum = MetaContentTypeEnum Int
+  deriving (Eq, Ord, Show)
+
+
+-- Metadata flags
+newtype MetaFlags = MetaFlags CInt
+  deriving (Eq, Ord, Show)
+
+
+-- Metadata permission modes
+newtype MetaModeFlags = MetaModeFlags CInt
+  deriving (Eq, Ord, Show)
+
+
+-- Metadata filetype enum
+newtype MetaFiletypeEnum = MetaFiletypeEnum CInt
+  deriving (Eq, Ord, Show)
+
+
+-- Filename flags
+newtype FilenameFlags = FilenameFlags CInt
+  deriving (Eq, Ord, Show)
+
+
+newtype FiletypeEnum = FiletypeEnum CInt
+  deriving (Eq, Ord, Show)
